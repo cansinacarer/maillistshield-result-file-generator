@@ -1,9 +1,9 @@
-import asyncio
 import time
 
 from app.config import SERVICE_NAME, POLLING_INTERVAL, PAUSE
 from app.utilities.reporting import ping_uptime_monitor
 from app.utilities.logging import logger
+from app.queue_monitor import queue_monitor
 
 while True:
 
@@ -16,12 +16,13 @@ while True:
         continue
 
     # Ping the uptime monitor
-    asyncio.run(ping_uptime_monitor())
+    ping_uptime_monitor()
 
     # Iterations start time
     start_time = time.time()
 
     # TODO: Business logic here
+    queue_monitor()
 
     # Iteration end time
     end_time = time.time()
