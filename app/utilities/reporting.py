@@ -7,7 +7,6 @@ from app.utilities.logging import logger
 # Send a heartbeat the the uptime monitor
 async def ping_uptime_monitor():
     while True:
-        logger.debug("Sending heartbeat to uptime monitor.")
         try:
             requests.get(UPTIME_MONITOR)
         except Exception as e:
