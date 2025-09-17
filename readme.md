@@ -4,7 +4,7 @@ This service monitors the results queues at vhost `RABBITMQ_DEFAULT_VHOSTS[1]` a
 
 Tasks of this service include the following:
 
-- List all the queues and their message counts
+- List all the queues and their message
   - If a queue has as many messages as its row_count, process it:
     - Create the output file,
     - Update in database:
@@ -17,6 +17,8 @@ __Job States:__
 
 - Expected before:
   - `file_queued`
+- Progress while the file rows have begun being processed
+  - `file_validation_in_progress`
 - Error states
   - `error_?`
 - Success state:

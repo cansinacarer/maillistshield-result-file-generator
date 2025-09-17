@@ -21,7 +21,7 @@ while True:
     # Iterations start time
     start_time = time.time()
 
-    # TODO: Business logic here
+    # Main business logic
     queue_monitor()
 
     # Iteration end time

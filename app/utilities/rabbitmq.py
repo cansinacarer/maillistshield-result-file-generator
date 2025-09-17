@@ -339,3 +339,18 @@ class QueueAgent:
 
         arguments = props.get("arguments", {})
         return arguments.get("row_count")
+
+    def get_job_uid(self, queue_name):
+        """
+        Get the value of the jobuid argument of a queue.
+
+        This is set when the queue is created for a specific job.
+        After a file is processed, it is then passed to the results queue
+        when that is created for a file.
+        """
+        props = self.get_queue_props(queue_name)
+        if not props:
+            return None
+
+        arguments = props.get("arguments", {})
+        return arguments.get("jobuid")

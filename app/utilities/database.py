@@ -88,3 +88,15 @@ def set_job_status(file, status):
     job = session.query(BatchJobs).filter_by(accepted_file=file).first()
     job.status = status
     session.commit()
+
+
+def set_job_status_via_uid(job_uid, status):
+    job = session.query(BatchJobs).filter_by(uid=job_uid).first()
+    job.status = status
+    session.commit()
+
+
+def set_job_row_progress(job_uid, row_no):
+    job = session.query(BatchJobs).filter_by(uid=job_uid).first()
+    job.last_pick_row = row_no
+    session.commit()
