@@ -7,6 +7,15 @@ from app.config import (
 from app.utilities.logging import logger
 
 
+# Uploads a DataFrame to S3
+def upload_df_to_s3(df, s3_key):
+    csv_buffer = df.to_csv(index=False)
+    try:
+        s3.Object(S3_BUCKET_NAME, s3_key).put(Body=csv_buffer)
+    except Exception as e:
+        logger.error(f"Error uploading DataFrame to S3: {e}", extra={"s3_key": s3_key})
+
+
 # Returns the list of newly accepted files
 def list_files(prefix=""):
     # Check if there are any new files in the S3 bucket

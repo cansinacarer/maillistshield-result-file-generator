@@ -3,7 +3,7 @@ import time
 from app.config import SERVICE_NAME, POLLING_INTERVAL, PAUSE
 from app.utilities.reporting import ping_uptime_monitor
 from app.utilities.logging import logger
-from app.queue_monitor import queue_monitor
+from app.queue_monitor import monitor_results_queues
 
 while True:
 
@@ -22,7 +22,7 @@ while True:
     start_time = time.time()
 
     # Main business logic
-    queue_monitor()
+    monitor_results_queues()
 
     # Iteration end time
     end_time = time.time()

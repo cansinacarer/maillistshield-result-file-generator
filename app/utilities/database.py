@@ -31,7 +31,9 @@ class BatchJobs(Base):
     original_file_name = Column(String(120), nullable=False)
     uploaded_file = Column(String(120), nullable=False)
     accepted_file = Column(String(), nullable=True)
+    results_file = Column(String(), nullable=True)
     row_count = Column(Integer)
+    last_pick_row = Column(BigInteger, default=0)
     email_column = Column(String(120))
     header_row = Column(Integer, nullable=False)
     source = Column(String(120), nullable=False, default="web")
@@ -100,3 +102,13 @@ def set_job_row_progress(job_uid, row_no):
     job = session.query(BatchJobs).filter_by(uid=job_uid).first()
     job.last_pick_row = row_no
     session.commit()
+
+
+def save_and_get_results_file_name(job_uid):
+    job = session.query(BatchJobs).filter_by(uid=job_uid).first()
+
+    results_file_name = job.accepted_file.replace("in-progress", "results")
+
+    job.results_file = results_file_name
+    session.commit()
+    return results_file_name
