@@ -34,6 +34,13 @@ def monitor_results_queues():
         # Get job UID from queue args
         job_uid = queue_agent.get_job_uid(queue)
 
+        if expected_message_count is None:
+            logger.warning(
+                f"Queue {queue} does not have an expected message count set. Skipping.",
+                extra={"job_uid": job_uid},
+            )
+            continue
+
         if current_message_count < expected_message_count:
             logger.debug(
                 f"Queue {queue} has {current_message_count} of the expected {expected_message_count} messages ready."
