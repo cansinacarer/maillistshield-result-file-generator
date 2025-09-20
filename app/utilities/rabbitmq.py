@@ -140,6 +140,17 @@ class QueueAgent:
             return True
         except Exception as e:
             logger.error(f"Error deleting queue '{queue_name}': {e}")
+
+            # Check if we are connected, if not try to reconnect and delete again
+            if self.connection.is_closed:
+                logger.warning(
+                    "Connection is closed. Attempting to reconnect and try deleting again."
+                )
+                if self.connect():
+                    self.delete_queue(queue_name)
+                else:
+                    logger.error("Reconnection attempt from delete_queue() failed.")
+
         return False
 
     def publish_message(self, queue_name, message_body):
@@ -247,42 +258,17 @@ class QueueAgent:
                 return None
         except Exception as e:
             logger.error(f"Error retrieving message from queue '{queue_name}': {e}")
-        return None
 
-    def retrieve_all_messages_and_delete_queue(self, queue_name):
-        """
-        Retrieve all messages from the specified queue.
-
-        This is used to drain the queue when generating result files.
-
-        We have a timeout of 5 minutes to avoid infinite loops.
-
-        Args:
-            queue_name: Name of the queue to retrieve from.
-
-        Returns:
-            A list of message bodies as dicts.
-        """
-        messages_retrieved = []
-        start_time = time.time()
-
-        # While messages remain in the queue and elapsed time is less than 5 minutes, keep fetching
-        while (
-            self.get_message_count(queue_name) > len(messages_retrieved)
-            and (time.time() - start_time) < 300
-        ):
-            message = self.get_message(queue_name, auto_ack=True)
-            if message:
-                messages_retrieved.append(message)
-            else:
-                logger.error(
-                    f"Expected more messages in queue '{queue_name}' but failed to retrieve."
+            # Check if we are connected, if not try to reconnect and get message again
+            if self.connection.is_closed:
+                logger.warning(
+                    "Connection is closed. Attempting to reconnect and try getting message again."
                 )
-
-        logger.debug(
-            f"Retrieved all {len(messages_retrieved)} messages from queue {queue_name}."
-        )
-        return messages_retrieved
+                if self.connect():
+                    return self.get_message(queue_name, auto_ack=auto_ack)
+                else:
+                    logger.error("Reconnection attempt from get_message() failed.")
+        return None
 
     def acknowledge_message(self, message):
         """
