@@ -50,8 +50,6 @@ def monitor_results_queues():
             # It is redundant to set this at every poll, but cheaper than checking the status to decide
             set_job_status_via_uid(job_uid, "file_validation_in_progress")
 
-            # Update the last_pick_row in the database either way
-            set_job_row_progress(job_uid, current_message_count)
         else:
             logger.info(
                 f"Queue {queue} has reached the expected message count of {expected_message_count}."
@@ -75,3 +73,6 @@ def monitor_results_queues():
 
             # Update the status in the database to indicate processing is complete
             set_job_status_via_uid(job_uid, "file_completed")
+
+        # Update the last_pick_row in the database either way
+        set_job_row_progress(job_uid, current_message_count)
